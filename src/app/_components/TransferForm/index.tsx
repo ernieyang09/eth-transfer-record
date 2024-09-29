@@ -1,22 +1,25 @@
+import { isAddress, parseEther } from "ethers";
+import { useEffect } from "react";
 import {
-  useForm,
   FormProvider,
-  useFormContext,
   useController,
+  useForm,
+  useFormContext,
 } from "react-hook-form";
+import { toast } from "sonner";
 import {
   useEstimateGas,
   useSendTransaction,
   useWaitForTransactionReceipt,
 } from "wagmi";
-import { Button } from "@/components/ui/button";
-import FormInput from "./FormInput";
-import { isAddress, parseEther } from "ethers";
 import { useAccount, useBalance } from "wagmi";
-import { DecimalInput } from "../DecimalInput";
+
+import { Button } from "@/components/ui/button";
 import { useCheckConnect } from "@/hooks/useCheckConnect";
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
+
+import { DecimalInput } from "../DecimalInput";
+
+import FormInput from "./FormInput";
 
 const RecipientInput = () => {
   const { control } = useFormContext();
@@ -91,7 +94,6 @@ const AmountInput = () => {
 
 const TransferButton = () => {
   const isCorrectConnected = useCheckConnect();
-  const [loading, setLoading] = useState(false);
 
   const {
     handleSubmit,
@@ -114,7 +116,8 @@ const TransferButton = () => {
       hash,
     });
 
-  const onSubmit = async (data) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const onSubmit = async (data: any) => {
     try {
       sendTransaction({
         gas: estimateGas,
@@ -132,7 +135,7 @@ const TransferButton = () => {
         description: `hash id: ${hash}`,
       });
     }
-  }, [isConfirmed]);
+  }, [hash, isConfirmed]);
 
   return (
     <Button

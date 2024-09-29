@@ -1,7 +1,8 @@
 import cls from "classnames";
+import { forwardRef } from "react";
+
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { forwardRef } from "react";
 
 export type FormInputProps = {
   name: string;

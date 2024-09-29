@@ -1,6 +1,12 @@
-"use client";
+import {
+  ChangeEvent,
+  HTMLProps,
+  RefObject,
+  forwardRef,
+  useCallback,
+} from "react";
+
 import { Input } from "@/components/ui/input";
-import { ChangeEvent, forwardRef, HTMLProps, useCallback } from "react";
 
 interface InputProps
   extends Omit<HTMLProps<HTMLInputElement>, "onChange" | "as" | "value"> {
@@ -47,7 +53,7 @@ const NumericInput = forwardRef<HTMLInputElement, EnforcedInputProps>(
         minLength={1}
         maxLength={79}
         spellCheck="false"
-        ref={ref as any}
+        ref={ref as unknown as RefObject<HTMLInputElement>}
         {...props}
       />
     );
@@ -74,7 +80,7 @@ export const DecimalInput = forwardRef(function DecimalInput(
     <NumericInput
       pattern="^[0-9]*[.,]?[0-9]*$"
       enforcer={decimalEnforcer}
-      ref={ref as any}
+      ref={ref as unknown as RefObject<HTMLInputElement>}
       {...props}
     />
   );
