@@ -7,11 +7,18 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { Card } from "@/components/ui/card";
 import TransferForm from "./_components/TransferForm";
 import TransferList from "./_components/TransferList";
+import { useEffect, useState } from "react";
 
 const queryClient = new QueryClient();
 
 export default function Home() {
-  return (
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  return mounted ? (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
         <RainbowKitProvider>
@@ -44,5 +51,5 @@ export default function Home() {
         </RainbowKitProvider>
       </QueryClientProvider>
     </WagmiProvider>
-  );
+  ) : null;
 }

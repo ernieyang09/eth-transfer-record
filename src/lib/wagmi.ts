@@ -10,4 +10,5 @@ export const config = getDefaultConfig({
     [scroll.id]: http(),
     [sepolia.id]: http(),
   },
+  ssr: false,
 });
