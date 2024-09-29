@@ -1,14 +1,14 @@
 import { getDefaultConfig } from "@rainbow-me/rainbowkit";
 import { http } from "wagmi";
-import { scroll, sepolia } from "wagmi/chains";
+import { scroll, scrollSepolia } from "wagmi/chains";
 
 export const config = getDefaultConfig({
   appName: "My RainbowKit App",
   projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT!,
-  chains: [scroll, sepolia],
+  chains: [scroll, scrollSepolia],
   transports: {
     [scroll.id]: http(),
-    [sepolia.id]: http(),
+    [scrollSepolia.id]: http(),
   },
   ssr: false,
 });

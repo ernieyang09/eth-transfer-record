@@ -16,6 +16,10 @@ import { useAccount, useBalance } from "wagmi";
 
 import { Button } from "@/components/ui/button";
 import { useCheckConnect } from "@/hooks/useCheckConnect";
+import {
+  useTransferRecordCreate,
+  useTransferRecordPatch,
+} from "@/hooks/useTransferRecord";
 
 import { DecimalInput } from "../DecimalInput";
 
@@ -94,6 +98,8 @@ const AmountInput = () => {
 
 const TransferButton = () => {
   const isCorrectConnected = useCheckConnect();
+  const { mutateAsync: createTransferRecord } = useTransferRecordCreate();
+  const { mutateAsync: patchTransferRecord } = useTransferRecordPatch();
 
   const {
     handleSubmit,
@@ -109,33 +115,59 @@ const TransferButton = () => {
     value: amount ? parseEther(amount) : undefined,
   });
 
-  const { data: hash, isPending, sendTransaction } = useSendTransaction();
+  const { data: hash, isPending, sendTransactionAsync } = useSendTransaction();
 
-  const { isLoading: isConfirming, isSuccess: isConfirmed } =
-    useWaitForTransactionReceipt({
-      hash,
-    });
+  const {
+    isLoading: isConfirming,
+    isSuccess: isConfirmed,
+    isError,
+  } = useWaitForTransactionReceipt({
+    hash,
+  });
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onSubmit = async (data: any) => {
     try {
-      sendTransaction({
+      const hash = await sendTransactionAsync({
         gas: estimateGas,
         to: data.recipient,
         value: parseEther(data.amount),
       });
+
+      await createTransferRecord({
+        toAddress: data.recipient,
+        amount: parseEther(data.amount).toString(),
+        token: "ETH",
+        txId: hash,
+      });
     } catch (e) {
+      // TODO handle error
       console.log(e);
     }
   };
 
   useEffect(() => {
-    if (isConfirmed) {
-      toast.message("Transaction sent", {
-        description: `hash id: ${hash}`,
-      });
-    }
-  }, [hash, isConfirmed]);
+    if (!hash) return;
+    const check = async () => {
+      if (isConfirmed) {
+        toast.message("Transaction sent", {
+          description: `hash id: ${hash}`,
+        });
+        await patchTransferRecord({
+          hash: hash,
+          status: "completed",
+        });
+      }
+      if (isError) {
+        toast.error("Transaction failed");
+        await patchTransferRecord({
+          hash: hash,
+          status: "failed",
+        });
+      }
+    };
+    check();
+  }, [hash, isConfirmed, isError, patchTransferRecord]);
 
   return (
     <Button
