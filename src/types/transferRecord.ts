@@ -6,7 +6,7 @@ export type TransferRecord = {
   amount: string;
   chain: number;
   txId: string;
-  createdAt: Date; // ISO string or Date based on your DB schema
+  createdAt: string; // ISO string or Date based on your DB schema
   status: Status;
   token: string;
 };

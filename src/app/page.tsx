@@ -8,11 +8,8 @@ import { WagmiProvider } from "wagmi";
 import { Card } from "@/components/ui/card";
 import { config } from "@/lib/wagmi";
 
-
-
 import TransferForm from "./_components/TransferForm";
 import TransferList from "./_components/TransferList";
-
 
 const queryClient = new QueryClient();
 
@@ -31,7 +28,12 @@ export default function Home() {
             <div className="mb-5">
               <div className="flex justify-between">
                 <div>Token Transfer Record</div>
-                <ConnectButton />
+                <ConnectButton
+                  accountStatus={{
+                    smallScreen: "avatar",
+                    largeScreen: "full",
+                  }}
+                />
               </div>
             </div>
 
@@ -46,7 +48,7 @@ export default function Home() {
 
                 <div>
                   <div className="text-lg font-bold mb-2">Transform Record</div>
-                  <Card className="p-2">
+                  <Card className="px-2 py-4">
                     <TransferList />
                   </Card>
                 </div>

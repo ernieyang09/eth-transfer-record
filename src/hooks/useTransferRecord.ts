@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { UseQueryOptions, useMutation, useQuery } from "@tanstack/react-query";
 import { useAccount } from "wagmi";
 
 import { PaginatedResponse } from "@/types/api";
@@ -10,23 +10,43 @@ import type {
 
 import { useCheckConnect } from "./useCheckConnect";
 
-export const getQueryKey = (chainId: number, address: string) => [
+export type TransferRecordQueryParams = {
+  chainId: number;
+  address: string;
+  offset?: number;
+  limit?: number;
+};
+
+export const getQueryKey = (params: TransferRecordQueryParams) => [
   "TransferRecord",
-  chainId,
-  address,
+  params,
 ];
 
-export const useFetchTransferRecord = () => {
+export const useFetchTransferRecord = (
+  params: {
+    page: number;
+    limit?: number;
+  } = {
+    page: 0,
+    limit: 10,
+  },
+  options?: UseQueryOptions<PaginatedResponse<TransferRecord>>
+) => {
   const isCorrectConnected = useCheckConnect();
   const { chainId, address } = useAccount();
   return useQuery<PaginatedResponse<TransferRecord>, Error>({
-    queryKey: getQueryKey(chainId!, address!),
+    queryKey: getQueryKey({
+      chainId: chainId!,
+      address: address!,
+      ...params,
+    }),
     queryFn: async () => {
-      return await fetch(`/api/records/${address}?chain=${chainId}`).then(
-        (res) => res.json()
-      );
+      return await fetch(
+        `/api/records/${address}?chain=${chainId}&page=${params.page}&limit=${params.limit}`
+      ).then((res) => res.json());
     },
     enabled: isCorrectConnected,
+    ...options,
   });
 };
 
@@ -61,7 +81,6 @@ export const useTransferRecordPatch = () => {
 
   return useMutation<TransferRecord, Error, { hash: string; status: Status }>({
     mutationFn: async (data: { hash: string; status: Status }) => {
-      console.log(data, 123);
       return await fetch(`/api/records/${address}`, {
         method: "PATCH",
         body: JSON.stringify(data),

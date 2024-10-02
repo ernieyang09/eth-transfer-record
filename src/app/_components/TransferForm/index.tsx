@@ -1,3 +1,4 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { isAddress, parseEther } from "ethers";
 import { useEffect } from "react";
 import {
@@ -98,6 +99,7 @@ const AmountInput = () => {
 
 const TransferButton = () => {
   const isCorrectConnected = useCheckConnect();
+  const queryClient = useQueryClient();
   const { mutateAsync: createTransferRecord } = useTransferRecordCreate();
   const { mutateAsync: patchTransferRecord } = useTransferRecordPatch();
 
@@ -157,6 +159,9 @@ const TransferButton = () => {
           hash: hash,
           status: "completed",
         });
+        queryClient.invalidateQueries({
+          queryKey: ["TransferRecord"],
+        });
       }
       if (isError) {
         toast.error("Transaction failed");
@@ -164,10 +169,13 @@ const TransferButton = () => {
           hash: hash,
           status: "failed",
         });
+        queryClient.invalidateQueries({
+          queryKey: ["TransferRecord"],
+        });
       }
     };
     check();
-  }, [hash, isConfirmed, isError, patchTransferRecord]);
+  }, [hash, isConfirmed, isError, patchTransferRecord, queryClient]);
 
   return (
     <Button
