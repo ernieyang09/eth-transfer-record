@@ -36,18 +36,18 @@ export default function Home() {
               </div>
             </div>
 
-            <Tabs defaultValue="eth">
-              <TabsList>
-                <TabsTrigger value="eth">Eth</TabsTrigger>
-              </TabsList>
-              <TabsContent value="eth">
-                <div className="flex flex-col items-center">
-                  <div className="w-full max-w-7xl ">
+            <div className="flex flex-col items-center">
+              <div className="w-full max-w-7xl ">
+                <Tabs defaultValue="eth">
+                  <TabsList>
+                    <TabsTrigger value="eth">Eth</TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="eth">
                     <ETH />
-                  </div>
-                </div>
-              </TabsContent>
-            </Tabs>
+                  </TabsContent>
+                </Tabs>
+              </div>
+            </div>
           </div>
         </RainbowKitProvider>
       </QueryClientProvider>
