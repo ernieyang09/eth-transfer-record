@@ -5,11 +5,10 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { WagmiProvider } from "wagmi";
 
-import { Card } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { config } from "@/lib/wagmi";
 
-import TransferForm from "./_components/TransferForm";
-import TransferList from "./_components/TransferList";
+import ETH from "./_components/ETH";
 
 const queryClient = new QueryClient();
 
@@ -37,23 +36,18 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="flex flex-col items-center">
-              <div className="w-full max-w-7xl ">
-                <div className="mb-5">
-                  <div className="text-lg font-bold mb-2">Transform Form</div>
-                  <Card className="p-2">
-                    <TransferForm />
-                  </Card>
+            <Tabs defaultValue="eth">
+              <TabsList>
+                <TabsTrigger value="eth">Eth</TabsTrigger>
+              </TabsList>
+              <TabsContent value="eth">
+                <div className="flex flex-col items-center">
+                  <div className="w-full max-w-7xl ">
+                    <ETH />
+                  </div>
                 </div>
-
-                <div>
-                  <div className="text-lg font-bold mb-2">Transform Record</div>
-                  <Card className="px-2 py-4">
-                    <TransferList />
-                  </Card>
-                </div>
-              </div>
-            </div>
+              </TabsContent>
+            </Tabs>
           </div>
         </RainbowKitProvider>
       </QueryClientProvider>
